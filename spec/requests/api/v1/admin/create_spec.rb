@@ -11,6 +11,7 @@ RSpec.describe "POST /api/v1/admin/articles", type: :request do
              teaser: "My teaser",
              content: "My content",
              category: "sports",
+             premium: false,
            } },
            headers: journalist_headers
     end
@@ -31,6 +32,28 @@ RSpec.describe "POST /api/v1/admin/articles", type: :request do
     it "an article to be linked to a journalist" do
       expect(journalist.articles.first.teaser).to eq "My teaser"
     end
+
+    it "an article is not premium" do
+      expect(Article.last.premium).to eq false
+    end
+  end
+
+  describe "create premium article" do
+    before do
+      post "/api/v1/admin/articles",
+           params: { article: {
+             title: "My title",
+             teaser: "My teaser",
+             content: "My content",
+             category: "sports",
+             premium: true,
+           } },
+           headers: journalist_headers
+    end
+
+    it "an article is premium" do
+      expect(Article.last.premium).to eq true
+    end
   end
 
   describe "unsuccessfully, missing article content" do
@@ -47,7 +70,7 @@ RSpec.describe "POST /api/v1/admin/articles", type: :request do
            headers: journalist_headers
     end
 
-    it "is expected to reurn a response status" do
+    it "is expected to return a response status" do
       expect(response).to have_http_status :unprocessable_entity
     end
 
