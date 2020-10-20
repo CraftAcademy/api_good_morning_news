@@ -4,7 +4,11 @@ class Api::V1::SubscriptionsController < ApplicationController
   def create
     begin
       customer_id = get_customer(params[:stripeToken])
-      subscription = Stripe::Subscription.create({ customer: customer_id, plan: "gold_subscription" })
+      Stripe::PaymentMethod.attach(
+        params[:paymentMethod],
+        {customer: customer_id},
+      )
+      subscription = Stripe::Subscription.create({ customer: customer_id, plan: "gold_subscription", default_payment_method: params[:paymentMethod] })
       test_env?(customer_id, subscription)
       status = Stripe::Invoice.retrieve(subscription.latest_invoice).paid
 
