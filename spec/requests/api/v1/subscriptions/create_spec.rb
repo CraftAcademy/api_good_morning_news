@@ -1,5 +1,7 @@
-require "stripe_mock"
-RSpec.describe "POST /api/v1/subscriptions", type: :request do
+# frozen_string_literal: true
+
+require 'stripe_mock'
+RSpec.describe 'POST /api/v1/subscriptions', type: :request do
   let(:stripe_helper) { StripeMock.create_test_helper }
   let(:valid_stripe_token) { stripe_helper.generate_card_token }
 
@@ -10,61 +12,61 @@ RSpec.describe "POST /api/v1/subscriptions", type: :request do
 
   let!(:plan) do
     stripe_helper.create_plan(
-      id: "gold_subscription",
-      amount: 10000,
-      currency: "sek",
-      interval: "month",
+      id: 'gold_subscription',
+      amount: 10_000,
+      currency: 'sek',
+      interval: 'month',
       interval_count: 1,
-      name: "Good Morning News",
-      product: product.id,
+      name: 'Good Morning News',
+      product: product.id
     )
   end
 
   let(:user) { create(:user) }
   let(:credentials) { user.create_new_auth_token }
-  let(:headers) { { HTTP_ACCEPT: "application/json" }.merge!(credentials) }
+  let(:headers) { { HTTP_ACCEPT: 'application/json' }.merge!(credentials) }
 
-  describe "successfully subsciption created" do
+  describe 'successfully subsciption created' do
     before do
-      post "/api/v1/subscriptions",
+      post '/api/v1/subscriptions',
            params: {
-             stripeToken: valid_stripe_token,
+             stripeToken: valid_stripe_token
            },
            headers: headers
     end
 
-    it "is expected to return 201 response status" do
+    it 'is expected to return 201 response status' do
       expect(response.status).to eq 201
     end
 
-    it "is expected to return success message" do
-      expect(response_json["message"]).to eq "Subscription succesfully created!"
+    it 'is expected to return success message' do
+      expect(response_json['message']).to eq 'Subscription succesfully created!'
     end
 
-    it "is expected to make user a subscriber" do
+    it 'is expected to make user a subscriber' do
       expect(user.reload.subscriber?).to eq true
     end
   end
 
-  describe "unsuccessfully subscription" do
-    describe "credit card being declined" do
+  describe 'unsuccessfully subscription' do
+    describe 'credit card being declined' do
       before do
         StripeMock.prepare_card_error(:card_declined, :new_invoice)
-        post "/api/v1/subscriptions",
+        post '/api/v1/subscriptions',
              params: {
-               stripeToken: valid_stripe_token,
+               stripeToken: valid_stripe_token
              },
              headers: headers
       end
-      it "is expected to return 422 response status" do
+      it 'is expected to return 422 response status' do
         expect(response.status).to eq 422
       end
 
-      it "is expected to return success message" do
-        expect(response_json["message"]).to eq "The subscription was not made. The card was declined"
+      it 'is expected to return success message' do
+        expect(response_json['message']).to eq 'The subscription was not made. The card was declined'
       end
 
-      it "is expected to make user a subscriber" do
+      it 'is expected to make user a subscriber' do
         expect(user.reload.subscriber?).to eq false
       end
     end

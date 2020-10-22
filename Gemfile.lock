@@ -1,3 +1,12 @@
+GIT
+  remote: https://github.com/stripe-ruby-mock/stripe-ruby-mock.git
+  revision: 2f03664cb6f76054e14c921c2f13300f85e0eb36
+  specs:
+    stripe-ruby-mock (3.0.1)
+      dante (>= 0.2.0)
+      multi_json (~> 1.0)
+      stripe (> 5, < 6)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -230,10 +239,6 @@ GEM
       rails (>= 5.1)
       responders
       stripe (>= 3.15.0)
-    stripe-ruby-mock (3.0.0)
-      dante (>= 0.2.0)
-      multi_json (~> 1.0)
-      stripe (> 5, < 6)
     sync (0.5.0)
     term-ansicolor (1.7.1)
       tins (~> 1.0)
@@ -272,7 +277,7 @@ DEPENDENCIES
   spring
   spring-watcher-listen (~> 2.0.0)
   stripe-rails
-  stripe-ruby-mock (= 3.0.0)
+  stripe-ruby-mock!
 
 RUBY VERSION
    ruby 2.5.1p57
